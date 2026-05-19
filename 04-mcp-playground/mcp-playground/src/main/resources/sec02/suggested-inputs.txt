@@ -1,0 +1,10 @@
+list all files
+what does file1.json contain?
+what about file2.csv?
+what about file3.json?
+delete file3.json
+can you convert file2.csv into a JSON array and save it as file2.json?
+can you merge file1.json and file3.json and save it as sam.json?
+remove 'position' from file3.json and save it as file4.json
+Find the file that contains names and scores
+can you remove all JSON files?

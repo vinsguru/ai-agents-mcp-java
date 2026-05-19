@@ -1,0 +1,247 @@
+{
+  "info": {
+    "_postman_id": "378ff300-5d2e-4b31-87c3-8f9d62c0cab1",
+    "name": "talent-flow",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "34902178"
+  },
+  "item": [
+    {
+      "name": "candidate-service",
+      "item": [
+        {
+          "name": "candidate-details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/api/candidates/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "api",
+                "candidates",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "job-service",
+      "item": [
+        {
+          "name": "search-by-skills",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8082/api/jobs?skills=java",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8082",
+              "path": [
+                "api",
+                "jobs"
+              ],
+              "query": [
+                {
+                  "key": "skills",
+                  "value": "java"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "career-advisor",
+      "item": [
+        {
+          "name": "find-jobs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/api/career-advisor/find-jobs?candidateId=1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8083",
+              "path": [
+                "api",
+                "career-advisor",
+                "find-jobs"
+              ],
+              "query": [
+                {
+                  "key": "candidateId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "compare-jobs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/api/career-advisor/compare-jobs?candidateId=1&jobIds=1,2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8083",
+              "path": [
+                "api",
+                "career-advisor",
+                "compare-jobs"
+              ],
+              "query": [
+                {
+                  "key": "candidateId",
+                  "value": "1"
+                },
+                {
+                  "key": "jobIds",
+                  "value": "1,2"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "generate-resume",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/api/career-advisor/generate-resume?candidateId=1&jobId=1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8083",
+              "path": [
+                "api",
+                "career-advisor",
+                "generate-resume"
+              ],
+              "query": [
+                {
+                  "key": "candidateId",
+                  "value": "1"
+                },
+                {
+                  "key": "jobId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "hiring-service",
+      "item": [
+        {
+          "name": "submit-job-application",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"jobId\": 9,\n    \"candidateId\": 1,\n    \"resume\": \"# Alice Johnson\\nSan Francisco, CA | +1-555-987-6543 | alice.johnson@example.com\\n\\n### Professional Summary\\nSenior Java Developer with 6 years of experience specializing in the design and optimization of high-traffic backend microservices. Proven track record of architecting scalable systems using Spring Boot and Java, with a demonstrated ability to improve API performance by 30%. Expert in containerization and cloud-native deployment, ready to contribute to modular microservice development at InnoCore Systems.\\n\\n### Technical Skills\\n*   **Languages:** Java\\n*   **Frameworks:** Spring Boot, Hibernate\\n*   **Cloud & Infrastructure:** AWS, Docker\\n*   **DevOps & Tools:** CI/CD Pipelines, Jenkins\\n*   **Databases:** MySQL\\n\\n### Professional Experience\\n\\n**TechSphere Inc. | Senior Java Developer**\\n*June 2019 – July 2023*\\n\\n*   Led the end-to-end design and development of backend microservices for a high-traffic e-commerce platform, utilizing Java and Spring Boot to ensure modular, maintainable architecture.\\n*   Engineered high-performance API solutions, resulting in a 30% measurable improvement in response times and system throughput.\\n*   Leveraged Docker for containerization, streamlining deployment workflows and ensuring consistent environments across the development lifecycle.\\n*   Integrated AWS cloud services to support scalable, resilient microservice infrastructure.\\n\\n**CloudEdge Solutions | Backend Developer**\\n*May 2016 – May 2019*\\n\\n*   Developed and maintained scalable RESTful APIs, ensuring robust communication between distributed service components.\\n*   Implemented and managed CI/CD pipelines using Jenkins, significantly reducing manual deployment overhead and increasing release frequency.\\n*   Designed and optimized database schemas in MySQL to support high-concurrency data operations for enterprise-grade applications.\\n\\n### Additional Information\\n*   **Core Competencies:** Microservices Architecture, API Performance Tuning, Cloud Migration, CI/CD Implementation.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8084/api/job-applications",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8084",
+              "path": [
+                "api",
+                "job-applications"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "job-applications-by-candidate-id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8084/api/job-applications?candidateId=1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8084",
+              "path": [
+                "api",
+                "job-applications"
+              ],
+              "query": [
+                {
+                  "key": "candidateId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "job-applications-by-job-id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8084/api/job-applications?jobId=9",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8084",
+              "path": [
+                "api",
+                "job-applications"
+              ],
+              "query": [
+                {
+                  "key": "jobId",
+                  "value": "9"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

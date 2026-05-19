@@ -1,0 +1,6 @@
+generate 1 random number
+what is the capital of the USA?
+generate 2 random numbers
+save 'hi' to a file
+generate 3 random numbers
+save those numbers to the file

@@ -1,0 +1,8 @@
+Generate JUnit 5 unit tests for the provided Java class.
+
+Requirements:
+- Cover happy path, edge cases, and error scenarios
+- Use meaningful test method names
+- Use assertions to validate behavior
+- Mock external dependencies when necessary
+- Return only the test class code

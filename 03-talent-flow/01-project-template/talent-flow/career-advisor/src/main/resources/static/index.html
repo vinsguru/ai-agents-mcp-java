@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TalentFlow</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #020617;
+            --tab-bar: #0f172a;
+            --accent: #38bdf8;
+            --text-muted: #94a3b8;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Navigation Bar */
+        .top-nav {
+            background: var(--tab-bar);
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+            border-bottom: 1px solid #1e293b;
+            justify-content: space-between;
+        }
+
+        .brand {
+            color: white;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand span { color: var(--accent); }
+
+        .tabs {
+            display: flex;
+            gap: 5px;
+            background: #1e293b;
+            padding: 4px;
+            border-radius: 8px;
+        }
+
+        .tab-btn {
+            padding: 8px 20px;
+            border-radius: 6px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--bg);
+            color: var(--accent);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        /* Iframe Container */
+        .view-container {
+            flex: 1;
+            position: relative;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+        }
+
+        iframe.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <div class="brand">TalentFlow <span>AI</span></div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchView('candidate', this)">
+                👤 Candidate View
+            </button>
+            <button class="tab-btn" onclick="switchView('recruiter', this)">
+                💼 Recruiter View
+            </button>
+        </div>
+
+        <div style="color: var(--text-muted); font-size: 0.75rem;">
+           
+        </div>
+    </nav>
+
+    <div class="view-container">
+        <iframe id="iframe-candidate" src="career-advisor-candidate.html" class="active"></iframe>
+        <iframe id="iframe-recruiter" src="career-advisor-recruiter.html"></iframe>
+    </div>
+
+    <script>
+        function switchView(view, btn) {
+            // Update Buttons
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Update Iframes
+            document.querySelectorAll('iframe').forEach(f => f.classList.remove('active'));
+            document.getElementById(`iframe-${view}`).classList.add('active');
+        }
+    </script>
+</body>
+</html>

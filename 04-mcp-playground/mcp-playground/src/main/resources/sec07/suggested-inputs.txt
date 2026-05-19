@@ -1,0 +1,3 @@
+Book a flight to Seattle tomorrow.
+Book a flight to New York tomorrow.
+Check the weather in Las Vegas. If it is not rainy, book a flight the day after tomorrow.

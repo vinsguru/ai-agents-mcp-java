@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>AI Career Advisor Pro</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --sidebar: #1e293b;
+            --card-bg: #1e293b;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --success: #22c55e;
+            --success-bg: #16653433;
+            --border: #334155;
+            --highlight: #334155;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            display: flex;
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar);
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            padding: 2.5rem 1.5rem;
+            box-sizing: border-box;
+            border-right: 1px solid var(--border);
+        }
+
+        .sidebar h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 3rem;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-btn {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            text-align: left;
+            cursor: pointer;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-btn::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: transparent;
+            border-radius: 2px;
+            transition: background 0.3s;
+        }
+
+        .nav-btn.active {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .nav-btn.active::before {
+            background: var(--accent);
+        }
+
+        .nav-btn:hover:not(.active) {
+            background: var(--highlight);
+            color: white;
+        }
+
+        /* Main Content */
+        .content {
+            flex: 1;
+            padding: 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 0 2rem;
+            color: white;
+        }
+
+        /* Header Controls */
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        #candidate-id {
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            color: white;
+            width: 100px;
+            font-size: 1rem;
+        }
+
+        /* Job Grid */
+        .job-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .job-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .job-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border-color: var(--accent);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .job-card h3 {
+            margin: 0;
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .match-score {
+            background: var(--success-bg);
+            color: var(--success);
+            padding: 0.4rem 1rem;
+            border-radius: 2rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border: 1px solid #22c55e44;
+        }
+
+        .meta {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin: 0.75rem 0;
+        }
+
+        .insight-box {
+            background: rgba(14, 165, 233, 0.1);
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .checkbox-container {
+            margin: 0; /* Remove the margins since it's now in a flex row */
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            user-select: none;
+            color: var(--text-muted);
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            accent-color: var(--accent);
+            width: 18px;
+            height: 18px;
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: space-between; 
+            align-items: center; /* Ensures vertical alignment */
+            margin-top: auto;    /* Pushes actions to the bottom of the card */
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border); /* Adds a subtle separator */
+        }
+
+        .btn {
+            width: fit-content; /* Stops the stretching */
+            min-width: 160px;   /* Maintains professional button shape */
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            display: inline-flex; /* Fixes alignment */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        .btn-outline:hover {
+            background: var(--highlight);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-compact {
+            min-width: auto; /* Allow it to shrink */
+            padding: 0.6rem 1.2rem;
+            font-size: 0.85rem;
+        }        
+
+        /* Comparison Table */
+        .comp-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: var(--card-bg);
+            border-radius: 1rem;
+            overflow: hidden;
+            margin-top: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .comp-table th, .comp-table td {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .comp-table th {
+            background: var(--highlight);
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .comp-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge {
+            padding: 0.35rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .badge-EXCELLENT {
+            background: #16653433;
+            color: var(--success);
+            border: 1px solid #22c55e44;
+        }
+
+        .badge-GOOD {
+            background: #854d0e22;
+            color: #f59e0b;
+            border: 1px solid #f59e0b44;
+        }
+
+        .badge-BAD {
+            background: rgba(239, 68, 68, 0.1);
+            color: #94a3b8; /* Muted text so it doesn't scream 'Error' */
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        #verdict-box {
+            /* Remove background, padding, and border so it is invisible when empty */
+            font-size: 1.1rem;
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+        }
+
+        .modal {
+            background: var(--sidebar);
+            width: 90%;
+            max-width: 900px;
+            border-radius: 1.25rem;
+            padding: 2.5rem;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal h2 {
+            margin-top: 0;
+            color: white;
+            font-size: 1.6rem;
+        }
+
+        .resume-area {
+            width: 95%;
+            height: 400px;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            background: #0f172a;
+            color: var(--text);
+            font-size: 0.95rem;
+            resize: none;
+        }
+
+        #resume-preview {
+            background: white;
+            color: #1e293b;
+            padding: 2rem !important;
+            overflow-y: auto;
+        }
+
+        #resume-preview h1, #resume-preview h2, #resume-preview h3 {
+            color: #1e293b;
+        }
+
+        .modal .nav-btn {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .modal .card-actions {
+            margin-top: 2rem;
+        }
+
+        /* Tier 1: >= 70% (Green) */
+        .match-excellent {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        /* Tier 2: >= 50% (Yellow) */
+        .match-good {
+            background: rgba(234, 179, 8, 0.15);
+            color: #eab308;
+            border: 1px solid rgba(234, 179, 8, 0.3);
+        }
+
+        /* Tier 3: >= 35% (Orange) */
+        .match-fair {
+            background: rgba(249, 115, 22, 0.15);
+            color: #f97316;
+            border: 1px solid rgba(249, 115, 22, 0.3);
+        }
+
+        /* Tier 4: < 35% (Muted Red) */
+        .match-poor {
+            background: rgba(239, 68, 68, 0.1);
+            color: #94a3b8; /* Muted text so it doesn't scream 'Error' */
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+
+       /* Modern Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--sidebar);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            border-left: 4px solid var(--success);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 9999;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        } 
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Career Advisor</h2>
+        
+        <div style="margin-bottom: 2.5rem; margin-top: 1rem;">
+            <button class="nav-btn active" id="nav-profile" onclick="showSection('profile')">
+                My Profile
+            </button>
+        </div>
+    
+        <div>
+            <p style="color: var(--text-muted); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; padding-left: 1.25rem; margin-bottom: 0.75rem; letter-spacing: 1px;">
+                Advisor Tools
+            </p>
+            <button class="nav-btn" id="nav-search" onclick="showSection('search')">
+                Job Opportunities
+            </button>
+            <button class="nav-btn" id="nav-compare" onclick="showSection('compare')">
+                Job Comparison
+            </button>
+        </div>
+    </div>
+    
+    <div class="content">
+        <div id="section-search" class="section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <div>
+                    <h1 style="margin-bottom: 0.5rem;">Recommended Jobs</h1>
+                    <p style="color: var(--text-muted); margin: 0;">AI-curated opportunities based on your profile</p>
+                </div>
+                <button class="btn btn-primary" style="flex: none; width: auto; padding: 0.8rem 2rem;" onclick="searchJobs()">
+                    Find Jobs
+                </button>
+            </div>
+            
+            <div id="job-container" class="job-grid">
+                </div>
+        </div>
+    
+        <div id="section-compare" class="section">
+            <h1>Job Comparison</h1>
+            
+            <div style="background: var(--card-bg); padding: 1.25rem; border-radius: 1rem; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <div>
+                    <span style="color: var(--text-muted); font-size: 0.9rem;">Selected IDs:</span>
+                    <span id="display-selected-ids" style="color: var(--accent); font-weight: 700; margin-left: 8px;">None</span>
+                </div>
+                <button class="btn btn-primary" id="run-compare-btn" onclick="performComparison()" >
+                    Compare Selected
+                </button>
+            </div>
+        
+            <div id="verdict-box"></div>
+            <div id="comparison-table-container"></div>
+        </div>
+    
+        <div id="section-profile" class="section active">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;">
+                <h1>My Profile</h1>
+                <div class="header-controls" style="background: var(--highlight); padding: 0.75rem 1.25rem; border-radius: 1rem; border: 1px solid var(--border); display: flex; align-items: center; gap: 15px;">
+                    <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">DEMO CONTEXT:</span>
+                    <input type="number" id="candidate-id" value="1" style="width: 50px; background: var(--bg); border: 1px solid var(--border); color: white; padding: 0.4rem; border-radius: 0.5rem; text-align: center;">
+                    <button class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.85rem;" onclick="switchProfile();">Switch Candidate</button>
+                </div>
+            </div>
+        
+            <div id="profile-card" class="job-card" style="margin-bottom: 3rem;">
+                </div>
+        
+            <h1>Application History</h1>
+            <table class="comp-table">
+                <thead>
+                    <tr>
+                        <th>Job ID</th>
+                        <th>Job Title</th>
+                        <th>Employer</th>
+                        <th>Applied Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="history-body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Resume Modal -->
+    <div id="resume-modal" class="modal-overlay">
+        <div class="modal">
+            <h2 id="modal-title">Review Tailored Resume</h2>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
+                <button class="nav-btn active" id="btn-edit" onclick="toggleResumeMode('edit')">Edit (Markdown)</button>
+                <button class="nav-btn" id="btn-preview" onclick="toggleResumeMode('preview')">Preview</button>
+            </div>
+    
+            <div id="edit-mode">
+                <textarea id="resume-editor" class="resume-area"></textarea>
+            </div>
+    
+            <div id="preview-mode" style="display: none;">
+                <div id="resume-preview" class="resume-area"></div>
+            </div>
+    
+            <div class="card-actions">
+                <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" id="save-apply-btn">Submit Application</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        const CANDIDATE_SERVICE_URL = 'http://localhost:8081';
+        const JOB_SERVICE_URL = 'http://localhost:8082';
+        const ADVISOR_SERVICE_URL = 'http://localhost:8083';
+        const HIRING_SERVICE_URL = 'http://localhost:8084';
+        let selectedJobs = [];
+        let fetchedJobs = [];
+
+        function showSection(id) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            // Deactivate all buttons
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+            // Show target section
+            document.getElementById(`section-${id}`).classList.add('active');
+            // Highlight target button
+            document.getElementById(`nav-${id}`).classList.add('active');
+
+            // Logic for loading Profile or History
+            if (id === 'profile') {
+                loadProfile();
+                loadHistory();
+            }
+        }
+
+        window.onload = () => showSection('profile');
+
+        async function searchJobs() {
+            const cid = document.getElementById('candidate-id').value;
+            const container = document.getElementById('job-container');
+            container.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); font-size: 1.1rem;">Curating personalized job recommendations...</p>';
+
+            try {
+                const res = await fetch(`${ADVISOR_SERVICE_URL}/api/career-advisor/find-jobs?candidateId=${cid}`);
+                fetchedJobs = await res.json();
+                renderCards(fetchedJobs);
+            } catch (e) {
+                console.error(e);
+                container.innerHTML = '<p style="color: #ef4444;">Failed to fetch jobs. Check console/backend.</p>';
+            }
+        }
+
+        function getMatchClass(score) {
+            if (score >= 70) return 'match-excellent'; // Top Tier
+            if (score >= 50) return 'match-good';      // Mid Tier
+            if (score >= 35) return 'match-fair';      // Low-Mid Tier
+            return 'match-poor';                       // Bottom Tier
+        }
+
+        function renderCards(jobs) {
+            const container = document.getElementById('job-container');
+            if (jobs.length === 0) {
+                container.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: var(--text-muted);">No jobs found.</p>';
+                return;
+            }
+            container.innerHTML = jobs.map(j => `
+                <div class="job-card" id="card-${j.jobId}">
+                    <div class="card-header">
+                        <h3>${j.title}</h3>
+                        <span class="match-score ${getMatchClass(j.matchScore)}">${j.matchScore}% Match</span>
+                    </div>
+                    <div class="meta">${j.employer} • ${j.location}</div>
+                    <div class="insight-box">
+                        <strong>AI Insight:</strong> ${j.matchReasoning}
+                    </div>
+
+                    <div class="card-actions">
+                        <label class="checkbox-container">
+                            <input type="checkbox" onchange="toggleCompare(${j.jobId})">
+                            <span>Compare</span>
+                        </label>
+                        <button class="btn btn-primary btn-compact" onclick="generateResume(${j.jobId})">
+                            Generate Resume
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleCompare(id) {
+            if (selectedJobs.includes(id)) {
+                selectedJobs = selectedJobs.filter(i => i !== id);
+            } else {
+                selectedJobs.push(id);
+            }
+
+            const display = document.getElementById('display-selected-ids');
+            const btn = document.getElementById('run-compare-btn');
+
+            if (display && btn) {
+                display.innerText = selectedJobs.length > 0 ? selectedJobs.join(', ') : "None";
+            }
+        }
+
+        async function performComparison() {
+
+            if (selectedJobs.length < 2 || selectedJobs.length > 4) return alert("Select 2–4 jobs for comparison");
+
+            const vBox = document.getElementById('verdict-box');
+            const tContainer = document.getElementById('comparison-table-container');
+
+            // Show a clean loading message without the heavy box styling yet
+            // FIX: Make the box visible immediately
+            vBox.style.display = 'block';
+            vBox.style.padding = '1.5rem';
+            vBox.style.background = 'var(--highlight)';
+            vBox.style.borderRadius = '1rem';
+            vBox.style.borderLeft = '4px solid var(--accent)';
+            vBox.style.marginBottom = '2rem';
+            vBox.innerHTML = `<p style="color: var(--accent); font-weight: 600;">AI Advisor is generating comparison matrix...</p>`;
+            tContainer.innerHTML = '';
+
+            const cid = document.getElementById('candidate-id').value;
+            try {
+                const res = await fetch(`${ADVISOR_SERVICE_URL}/api/career-advisor/compare-jobs?candidateId=${cid}&jobIds=${selectedJobs}`);
+                const data = await res.json();
+                renderComparisonTable(data);
+            } catch (e) {
+                vBox.innerHTML = '<span style="color: #ef4444;">Comparison failed.</span>';
+            }
+        }
+
+        function renderComparisonTable(data) {
+            const vBox = document.getElementById('verdict-box');
+            const tContainer = document.getElementById('comparison-table-container');
+
+            vBox.style.padding = '1.5rem';
+            vBox.style.background = 'var(--highlight)';
+            vBox.style.borderRadius = '1rem';
+            vBox.style.borderLeft = '4px solid var(--accent)';
+            vBox.style.marginBottom = '2rem';
+            vBox.style.display = 'block';
+
+            vBox.innerHTML = `<strong>Final Verdict:</strong> ${data.overallVerdict}`;
+
+            let html = `<table class="comp-table"><thead><tr><th>Feature</th>`;
+            data.jobInsights.forEach(c => html += `<th>${c.jobId}: ${c.jobTitle}</th>`);
+            html += `</tr></thead><tbody>`;
+
+            html += `<tr><td><strong>Skills</strong></td>`;
+            data.jobInsights.forEach(c => html += `<td>
+                <span class="badge badge-${c.skillAlignment}">${c.skillAlignment}</span><br><br>
+                <small>${c.skillInsight}</small>
+            </td>`);
+            html += `</tr>`;
+
+            html += `<tr><td><strong>Location</strong></td>`;
+            data.jobInsights.forEach(c => html += `<td>${c.locationInsight}</td>`);
+            html += `</tr>`;
+
+            html += `<tr><td><strong>Salary</strong></td>`;
+            data.jobInsights.forEach(c => html += `<td>${c.salaryInsight}</td>`);
+            html += `</tr>`;
+
+            html += `<tr><td><strong>Recommendation</strong></td>`;
+            data.jobInsights.forEach(c => html += `<td><em>${c.finalRecommendation}</em></td>`);
+            html += `</tr>`;
+
+            html += `</tbody></table>`;
+
+            tContainer.innerHTML = html;
+        }
+
+        function toggleResumeMode(mode) {
+            const editMode = document.getElementById('edit-mode');
+            const previewMode = document.getElementById('preview-mode');
+            const editBtn = document.getElementById('btn-edit');
+            const previewBtn = document.getElementById('btn-preview');
+            const rawContent = document.getElementById('resume-editor').value;
+
+            if (mode === 'preview') {
+                editMode.style.display = 'none';
+                previewMode.style.display = 'block';
+                editBtn.classList.remove('active');
+                previewBtn.classList.add('active');
+                document.getElementById('resume-preview').innerHTML = marked.parse(rawContent);
+            } else {
+                editMode.style.display = 'block';
+                previewMode.style.display = 'none';
+                editBtn.classList.add('active');
+                previewBtn.classList.remove('active');
+            }
+        }
+
+        async function generateResume(jobId) {
+            const cid = document.getElementById('candidate-id').value;
+            document.getElementById('modal-title').innerText = "Review Tailored Resume";
+            document.getElementById('save-apply-btn').style.display = 'block';
+            document.getElementById('resume-modal').style.display = 'flex';
+            toggleResumeMode('edit');
+            document.getElementById('resume-editor').value = 'AI is crafting your tailored resume...';
+
+            try {
+                const res = await fetch(`${ADVISOR_SERVICE_URL}/api/career-advisor/generate-resume?candidateId=${cid}&jobId=${jobId}`);
+                const data = await res.json();
+                document.getElementById('resume-editor').value = data.resume;
+                toggleResumeMode('preview');
+                document.getElementById('save-apply-btn').onclick = () => saveAndApply(cid, jobId);
+            } catch (e) {
+                closeModal();
+                alert("Resume generation failed.");
+            }
+        }
+
+        async function saveAndApply(cid, jid) {
+            const content = document.getElementById('resume-editor').value;
+
+            try {
+                await fetch(`${HIRING_SERVICE_URL}/api/job-applications`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        jobId: jid,
+                        candidateId: cid,
+                        resume: content
+                    })
+                });
+
+                showToast("Application Submitted!");
+                closeModal();
+                showSection('profile');
+            } catch (e) {
+                alert("Application failed.");
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('resume-modal').style.display = 'none';
+        }
+
+        async function loadProfile() {
+            const cid = document.getElementById('candidate-id').value;
+
+            try {
+                const res = await fetch(`${CANDIDATE_SERVICE_URL}/api/candidates/${cid}`); //
+                const data = await res.json();
+                renderProfileCard(data);
+            } catch (e) {
+                console.error("Failed to load profile", e);
+            }
+        }
+
+        function renderProfileCard(data) {
+            const experienceHtml = data.workExperiences.map(exp => `
+                <div style="border-left: 2px solid var(--accent); padding-left: 15px; margin-bottom: 20px; position: relative;">
+                    <div style="width: 10px; height: 10px; background: var(--accent); border-radius: 50%; position: absolute; left: -6px; top: 5px;"></div>
+                    <div style="font-weight: 600; color: white;">${exp.jobTitle} @ ${exp.companyName}</div>
+                    <div style="margin-top: 5px; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;">
+                        ${exp.startDate} - ${exp.endDate || 'Present'}
+                    </div>
+                    <div style="font-size: 0.9rem; line-height: 1.4; color: var(--text-muted);">${exp.description}</div>
+                    <div style="margin-top: 8px;">
+                        ${exp.technologies.map(tech => `<span class="badge" style="background: var(--highlight); margin-right: 5px; font-size: 0.75rem;">${tech}</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('profile-card').innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;">
+                    <div style="border-right: 1px solid var(--border); padding-right: 2rem;">
+                        <h2 style="margin-top: 0; color: white;">${data.name}</h2>
+                        <div class="meta" style="margin-bottom: 20px;">
+                            <div>📍 ${data.location}</div>
+                            <div>📞 ${data.phone}</div>
+                            <div>✉️ ${data.email}</div>
+                            <div style="margin-top: 10px; color: var(--accent); font-weight: bold;">
+                                ${data.experienceInYears} Years Professional Experience
+                            </div>
+                        </div>
+                        <div class="insight-box" style="margin-top: 1.5rem;">
+                            <strong>Core Skills</strong><br>
+                            <div style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 5px;">
+                                ${data.skills.map(s => `<span class="badge badge-EXCELLENT">${s}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 style="margin-top: 0; color: var(--accent);">Experience History</h3>
+                        <div style="margin-top: 1.5rem;">
+                            ${experienceHtml}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+
+        async function loadHistory() {
+            const cid = document.getElementById('candidate-id').value;
+            const res = await fetch(`${HIRING_SERVICE_URL}/api/job-applications?candidateId=${cid}`);
+            const apps = await res.json();
+
+            document.getElementById('history-body').innerHTML = apps.map(a => `
+                <tr>
+                    <td>${a.jobId}</td>
+                    <td><strong>${a.jobTitle}</strong></td>
+                    <td>${a.employer}</td>
+                    <td>${a.appliedDate}</td>
+                    <td><button class="btn btn-outline" style="padding: 0.5rem;" onclick="viewSentResume(\`${a.resume.replace(/`/g, '\\`')}\`)">View Resume</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function viewSentResume(content) {
+            document.getElementById('modal-title').innerText = "Submitted Resume Snapshot";
+            document.getElementById('save-apply-btn').style.display = 'none';
+            document.getElementById('resume-modal').style.display = 'flex';
+            document.getElementById('resume-editor').value = content;
+            toggleResumeMode('preview');
+        }
+
+        async function switchProfile(){
+            document.getElementById('job-container').innerHTML = '';
+            fetchedJobs = [];
+            selectedJobs = [];
+
+            const vBox = document.getElementById('verdict-box');
+            const tContainer = document.getElementById('comparison-table-container');
+            const displayIds = document.getElementById('display-selected-ids');
+            const compareBtn = document.getElementById('run-compare-btn');
+
+            vBox.innerHTML = '';
+            vBox.style.display = 'none';
+            vBox.style.padding = '0';
+            vBox.style.border = 'none';
+            vBox.style.background = 'none';
+
+            tContainer.innerHTML = '';
+
+            if (displayIds) displayIds.innerText = "None";
+
+            loadProfile();
+            loadHistory();
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            if (type === 'error') toast.style.borderColor = '#ef4444';
+
+            toast.innerHTML = `
+                <span style="color: ${type === 'success' ? 'var(--success)' : '#ef4444'}; font-weight: bold;">
+                    ${type === 'success' ? '✓' : '✕'}
+                </span>
+                <span>${message}</span>
+            `;
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s ease-in reverse forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+[
+  {
+    "id": 1,
+    "name": "Alice Johnson",
+    "email": "alice.johnson@example.com",
+    "phone": "+1-555-987-6543",
+    "location": "San Francisco, CA",
+    "experienceInYears": 6,
+    "skills": [
+      "Java",
+      "Spring Boot",
+      "Hibernate",
+      "AWS"
+    ],
+    "workExperiences": [
+      {
+        "companyName": "TechSphere Inc.",
+        "jobTitle": "Senior Java Developer",
+        "startDate": "2019-06-01",
+        "endDate": "2023-07-31",
+        "description": "Led the design and development of backend microservices for a high-traffic e-commerce platform using Java and Spring Boot. Improved API performance by 30%.",
+        "technologies": [
+          "Java",
+          "Spring Boot",
+          "Hibernate",
+          "AWS",
+          "Docker"
+        ]
+      },
+      {
+        "companyName": "CloudEdge Solutions",
+        "jobTitle": "Backend Developer",
+        "startDate": "2016-05-01",
+        "endDate": "2019-05-31",
+        "description": "Developed scalable REST APIs and implemented CI/CD pipelines.",
+        "technologies": [
+          "Java",
+          "Microservices",
+          "MySQL",
+          "Jenkins"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Brian Carter",
+    "email": "brian.carter@example.com",
+    "phone": "+1-555-234-5678",
+    "location": "Austin, TX",
+    "experienceInYears": 5,
+    "skills": [
+      "Go",
+      "gRPC",
+      "Kubernetes",
+      "PostgreSQL"
+    ],
+    "workExperiences": [
+      {
+        "companyName": "StreamLogic Inc.",
+        "jobTitle": "Golang Backend Engineer",
+        "startDate": "2019-08-01",
+        "endDate": "2023-02-28",
+        "description": "Developed high-performance microservices using Golang and gRPC.",
+        "technologies": [
+          "Go",
+          "gRPC",
+          "Kubernetes",
+          "Prometheus",
+          "Docker"
+        ]
+      },
+      {
+        "companyName": "NextGen Cloud Services",
+        "jobTitle": "Software Engineer",
+        "startDate": "2017-06-01",
+        "endDate": "2019-07-31",
+        "description": "Built cloud-native backend solutions with Go.",
+        "technologies": [
+          "Go",
+          "REST API",
+          "PostgreSQL",
+          "Terraform"
+        ]
+      }
+    ]
+  }
+]

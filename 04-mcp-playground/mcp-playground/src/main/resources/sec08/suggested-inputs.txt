@@ -1,0 +1,6 @@
+List files
+Delete file1.txt
+Delete file2.txt
+Delete file3.txt
+Delete file4.txt
+Delete file5.txt

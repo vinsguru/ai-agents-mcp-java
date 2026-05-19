@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Recruiter Portal | Application Review</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --sidebar: #1e293b;
+            --card-bg: #1e293b;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --success: #22c55e;
+            --success-bg: #16653433;
+            --border: #334155;
+            --highlight: #334155;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            display: flex;
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar);
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            padding: 2.5rem 1.5rem;
+            box-sizing: border-box;
+            border-right: 1px solid var(--border);
+        }
+
+        .sidebar h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 3rem;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-btn {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            text-align: left;
+            cursor: pointer;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-btn::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: transparent;
+            border-radius: 2px;
+            transition: background 0.3s;
+        }
+
+        .nav-btn.active {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .nav-btn.active::before {
+            background: var(--accent);
+        }
+
+
+        /* Main Content */
+        .content {
+            flex: 1;
+            padding: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 3rem;
+        }
+
+        h1 { font-size: 2rem; margin: 0; color: white; }
+
+        .job-id-badge {
+            background: var(--highlight);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-family: monospace;
+            color: var(--accent);
+            border: 1px solid var(--border);
+        }
+
+        /* Application List */
+        .app-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            transition: border-color 0.3s ease;
+        }
+
+        .app-card:hover {
+            border-color: var(--accent);
+        }
+
+        .app-header {
+            padding: 1.5rem 2rem;
+            background: rgba(255,255,255,0.02);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .candidate-info h3 { margin: 0; color: white; font-size: 1.25rem; }
+        .candidate-info p { margin: 0.25rem 0 0; color: var(--text-muted); font-size: 0.9rem; }
+
+        .score-pill {
+            padding: 0.5rem 1.25rem;
+            border-radius: 2rem;
+            font-weight: 800;
+            font-size: 1rem;
+        }
+
+        /* Tiered Score Styling */
+        .score-high { background: var(--success-bg); color: var(--success); border: 1px solid #22c55e44; }
+        .score-mid { background: rgba(234, 179, 8, 0.1); color: #eab308; border: 1px solid #eab30844; }
+        .score-low { background: rgba(239, 68, 68, 0.1); color: var(--text-muted); border: 1px solid #ef444422; }
+
+        .app-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        .panel {
+            padding: 2rem;
+            height: 500px;
+            overflow-y: auto;
+        }
+
+        .panel-left {
+            border-right: 1px solid var(--border);
+            background: rgba(0,0,0,0.1);
+        }
+
+        .panel-title {
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* AI Insight Styling */
+        .insight-text {
+            line-height: 1.6;
+            font-size: 1rem;
+            color: var(--text);
+            background: rgba(56, 189, 248, 0.05);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px dashed var(--accent);
+        }
+
+        /* Resume Content Styling */
+        .resume-content {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: var(--text-muted);
+        }
+        .resume-content h2 { color: white; font-size: 1.1rem; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+
+        .controls {
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        input[type="number"] {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 0.6rem;
+            border-radius: 0.5rem;
+            width: 80px;
+        }
+
+        .btn {
+            padding: 0.6rem 1.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            background: var(--accent);
+            color: var(--bg);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Hiring Advisor</h2>
+        <button class="nav-btn active">
+            Job Applications
+        </button>
+    </div>
+
+    <div class="content">
+        <div class="header">
+            <div>
+                <h1>Review Applications</h1>
+                <p style="color: var(--text-muted); margin-top: 0.5rem;">Managing candidates and AI-generated match insights.</p>
+            </div>
+            <div class="job-id-badge">JOB_ID: <span id="current-job-id">3</span></div>
+        </div>
+
+        <div class="controls">
+            <span style="font-size: 0.9rem; font-weight: 600;">Job ID:</span>
+            <input type="number" id="input-job-id" value="3">
+            <button class="btn" onclick="fetchApplications()">Load Applications</button>
+        </div>
+
+        <div id="applications-container">
+            </div>
+    </div>
+
+    <script>
+        const HIRING_SERVICE_URL = 'http://localhost:8084';
+
+        function getScoreClass(score) {
+            if (score >= 70) return 'score-high';
+            if (score >= 40) return 'score-mid';
+            return 'score-low';
+        }
+
+        async function fetchApplications() {
+            const jobId = document.getElementById('input-job-id').value;
+            document.getElementById('current-job-id').innerText = jobId;
+            const container = document.getElementById('applications-container');
+            
+            container.innerHTML = '<p style="text-align: center; color: var(--text-muted);">Retrieving enriched applications...</p>';
+
+            try {
+                const res = await fetch(`${HIRING_SERVICE_URL}/api/job-applications?jobId=${jobId}`);
+                const apps = await res.json();
+                renderApplications(apps);
+            } catch (e) {
+                container.innerHTML = '<p style="color: var(--danger);">Failed to load applications.</p>';
+            }
+        }
+
+        function renderApplications(apps) {
+            const container = document.getElementById('applications-container');
+            if (apps.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-muted);">No applications found for this job ID.</p>';
+                return;
+            }
+
+            container.innerHTML = apps.map(app => `
+                <div class="app-card">
+                    <div class="app-header">
+                        <div class="candidate-info">
+                            <h3>Candidate ID: ${app.candidateId}</h3>
+                            <p>Applied on ${app.appliedDate} • App ID: ${app.applicationId}</p>
+                        </div>
+                        <div class="score-pill ${getScoreClass(app.matchScore)}">
+                            ${app.matchScore}% Match
+                        </div>
+                    </div>
+                    <div class="app-body">
+                        <div class="panel panel-left">
+                            <div class="panel-title">✨ AI Insight</div>
+                            <div class="insight-text">
+                                ${app.matchReasoning}
+                            </div>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 1.5rem;">
+                                ℹ️ This insight is generated based on a cross-analysis of the candidate's resume and the job requirements.
+                            </p>
+                        </div>
+                        <div class="panel">
+                            <div class="panel-title">📄 Submitted Resume</div>
+                            <div class="resume-content">
+                                ${marked.parse(app.resume)}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Initial Load
+        window.onload = fetchApplications;
+    </script>
+</body>
+</html>

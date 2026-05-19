@@ -1,0 +1,6 @@
+services:
+  ollama:
+    image: ollama/ollama:0.18.2
+    container_name: ollama
+    ports:
+    - 11434:11434

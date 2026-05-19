@@ -1,0 +1,7 @@
+{userQuestion}
+
+CONTEXT:
+
+User Profile: {userProfile}
+
+Job Details: {jobDetails}

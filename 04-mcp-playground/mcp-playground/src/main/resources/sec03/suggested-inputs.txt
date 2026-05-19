@@ -1,0 +1,7 @@
+Set a reminder in 2 hours to pay the rent
+Set a reminder for tomorrow at 5 PM to finish the assignment
+I need to call my friend Sam the day after tomorrow. Set a reminder for 8 AM
+List all my reminders
+When do I need to do the assignment?
+When do I call Sam?
+What have I scheduled today?

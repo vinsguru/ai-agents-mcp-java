@@ -1,0 +1,212 @@
+[
+  {
+    "airportCode": "JFK",
+    "name": "New York City, USA",
+    "recommendation": {
+      "restaurants": [
+        "Joe's Pizza",
+        "Shake Shack"
+      ],
+      "sightseeing": [
+        "Times Square",
+        "Central Park"
+      ]
+    }
+  },
+  {
+    "airportCode": "ATL",
+    "name": "Atlanta, Georgia, USA",
+    "recommendation": {
+      "restaurants": [
+        "The Varsity",
+        "Mary Mac's Tea Room"
+      ],
+      "sightseeing": [
+        "Martin Luther King Jr. National Historic Site",
+        "World of Coca-Cola"
+      ]
+    }
+  },
+  {
+    "airportCode": "LAS",
+    "name": "Las Vegas, Nevada, USA",
+    "recommendation": {
+      "restaurants": [
+        "Joël Robuchon",
+        "Bacchanal Buffet"
+      ],
+      "sightseeing": [
+        "The Las Vegas Strip",
+        "Fremont Street Experience"
+      ]
+    }
+  },
+  {
+    "airportCode": "LAX",
+    "name": "Los Angeles, California, USA",
+    "recommendation": {
+      "restaurants": [
+        "In-N-Out Burger",
+        "The Cheesecake Factory"
+      ],
+      "sightseeing": [
+        "Universal Studios Hollywood",
+        "Venice Beach"
+      ]
+    }
+  },
+  {
+    "airportCode": "ORD",
+    "name": "Chicago, Illinois, USA",
+    "recommendation": {
+      "restaurants": [
+        "Giordano's",
+        "Portillo's"
+      ],
+      "sightseeing": [
+        "Millennium Park",
+        "The Magnificent Mile"
+      ]
+    }
+  },
+  {
+    "airportCode": "SFO",
+    "name": "San Francisco, California, USA",
+    "recommendation": {
+      "restaurants": [
+        "Fisherman's Wharf",
+        "The Slanted Door"
+      ],
+      "sightseeing": [
+        "Golden Gate Park",
+        "Chinatown"
+      ]
+    }
+  },
+  {
+    "airportCode": "MIA",
+    "name": "Miami, Florida, USA",
+    "recommendation": {
+      "restaurants": [
+        "Versailles Restaurant",
+        "Joe's Stone Crab"
+      ],
+      "sightseeing": [
+        "South Beach",
+        "Wynwood Walls"
+      ]
+    }
+  },
+  {
+    "airportCode": "SEA",
+    "name": "Seattle, Washington, USA",
+    "recommendation": {
+      "restaurants": [
+        "Dahlia Lounge",
+        "Ivar's Acres of Clams"
+      ],
+      "sightseeing": [
+        "Pike Place Market",
+        "Chihuly Garden and Glass"
+      ]
+    }
+  },
+  {
+    "airportCode": "BOS",
+    "name": "Boston, Massachusetts, USA",
+    "recommendation": {
+      "restaurants": [
+        "Union Oyster House",
+        "Neptune Oyster"
+      ],
+      "sightseeing": [
+        "Fenway Park",
+        "Museum of Fine Arts"
+      ]
+    }
+  },
+  {
+    "airportCode": "DFW",
+    "name": "Dallas, Texas, USA",
+    "recommendation": {
+      "restaurants": [
+        "Pecan Lodge",
+        "The Rustic"
+      ],
+      "sightseeing": [
+        "Dealey Plaza",
+        "Fort Worth Stockyards"
+      ]
+    }
+  },
+  {
+    "airportCode": "DEN",
+    "name": "Denver, Colorado, USA",
+    "recommendation": {
+      "restaurants": [
+        "Linger",
+        "The Buckhorn Exchange"
+      ],
+      "sightseeing": [
+        "Red Rocks Park",
+        "Denver Art Museum"
+      ]
+    }
+  },
+  {
+    "airportCode": "IAH",
+    "name": "Houston, Texas, USA",
+    "recommendation": {
+      "restaurants": [
+        "The Pit Room",
+        "The Raven Grill"
+      ],
+      "sightseeing": [
+        "Space Center Houston",
+        "Houston Museum of Natural Science"
+      ]
+    }
+  },
+  {
+    "airportCode": "MCO",
+    "name": "Orlando, Florida, USA",
+    "recommendation": {
+      "restaurants": [
+        "Be Our Guest Restaurant",
+        "The Ravenous Pig"
+      ],
+      "sightseeing": [
+        "Walt Disney World",
+        "Universal Studios Florida"
+      ]
+    }
+  },
+  {
+    "airportCode": "IAD",
+    "name": "Washington, D.C., USA",
+    "recommendation": {
+      "restaurants": [
+        "Ben's Chili Bowl",
+        "Old Ebbitt Grill"
+      ],
+      "sightseeing": [
+        "National Mall",
+        "Lincoln Memorial"
+      ]
+    }
+  },
+  {
+    "airportCode": "PHL",
+    "name": "Philadelphia, Pennsylvania, USA",
+    "recommendation": {
+      "restaurants": [
+        "Reading Terminal Market",
+        "Parc"
+      ],
+      "sightseeing": [
+        "Independence Hall",
+        "Liberty Bell"
+      ]
+    }
+  }
+]

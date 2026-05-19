@@ -1,0 +1,281 @@
+[
+  {
+    "id": 1,
+    "title": "Senior Software Engineer - Java",
+    "description": "Lead the design and development of backend services using Java and Spring Boot.",
+    "location": "New York, NY",
+    "employer": "FinEdge Technologies",
+    "requiredSkills": [
+      "Java",
+      "Spring Boot",
+      "Docker",
+      "AWS"
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Backend Developer - Golang",
+    "description": "Develop high-performance microservices in Go for large-scale distributed systems.",
+    "location": "Remote",
+    "employer": "CloudWorks Labs",
+    "requiredSkills": [
+      "Go",
+      "gRPC",
+      "PostgreSQL",
+      "Kubernetes"
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Platform Engineer - Java",
+    "description": "Own backend platform services powering millions of API requests daily.",
+    "location": "Austin, TX",
+    "employer": "DataMesh Corp.",
+    "requiredSkills": [
+      "Java",
+      "Spring Cloud",
+      "Kafka",
+      "Kubernetes"
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Software Engineer II (Golang)",
+    "description": "Build secure and scalable APIs for real-time applications using Go.",
+    "location": "Remote",
+    "employer": "GoScale Systems",
+    "requiredSkills": [
+      "Go",
+      "Docker",
+      "Redis"
+    ]
+  },
+  {
+    "id": 5,
+    "title": "Senior Java Backend Engineer",
+    "description": "Architect and deliver cloud-native backend solutions using Java and Spring Cloud.",
+    "location": "San Francisco, CA",
+    "employer": "EdgeWave Solutions",
+    "requiredSkills": [
+      "Java",
+      "Spring Cloud",
+      "Microservices",
+      "AWS"
+    ]
+  },
+  {
+    "id": 6,
+    "title": "Principal Software Engineer (Go)",
+    "description": "Drive backend architecture decisions and mentor team in Golang best practices.",
+    "location": "Seattle, WA",
+    "employer": "StreamLogic Inc.",
+    "requiredSkills": [
+      "Go",
+      "gRPC",
+      "Kubernetes"
+    ]
+  },
+  {
+    "id": 7,
+    "title": "Backend Services Developer - Java",
+    "description": "Implement business-critical backend services using Java and Hibernate.",
+    "location": "Boston, MA",
+    "employer": "BrightTech Consulting",
+    "requiredSkills": [
+      "Java",
+      "Hibernate",
+      "MySQL",
+      "Docker"
+    ]
+  },
+  {
+    "id": 8,
+    "title": "Golang API Specialist",
+    "description": "Create performant API layers in Go for cloud-native architectures.",
+    "location": "Remote",
+    "employer": "BlueSky Digital",
+    "requiredSkills": [
+      "Go",
+      "PostgreSQL",
+      "AWS"
+    ]
+  },
+  {
+    "id": 9,
+    "title": "Java Microservices Developer",
+    "description": "Focus on building modular microservices leveraging Spring Boot and Kafka.",
+    "location": "Chicago, IL",
+    "employer": "InnoCore Systems",
+    "requiredSkills": [
+      "Java",
+      "Spring Boot",
+      "Kafka",
+      "Docker"
+    ]
+  },
+  {
+    "id": 10,
+    "title": "Senior Software Engineer - Go",
+    "description": "Develop and scale backend components for data-intensive applications using Golang.",
+    "location": "Remote",
+    "employer": "DataFlux Inc.",
+    "requiredSkills": [
+      "Go",
+      "Microservices",
+      "Redis",
+      "Kubernetes"
+    ]
+  },
+  {
+    "id": 11,
+    "title": "Senior Frontend Engineer",
+    "description": "Lead the development of responsive web applications using React and TypeScript.",
+    "location": "San Francisco, CA",
+    "employer": "PixelWave Studios",
+    "requiredSkills": [
+      "React",
+      "TypeScript",
+      "Redux",
+      "Webpack"
+    ]
+  },
+  {
+    "id": 12,
+    "title": "UI Developer - Angular",
+    "description": "Build intuitive and dynamic user interfaces using Angular and RxJS.",
+    "location": "Remote",
+    "employer": "BrightEdge Digital",
+    "requiredSkills": [
+      "Angular",
+      "RxJS",
+      "TypeScript"
+    ]
+  },
+  {
+    "id": 13,
+    "title": "Frontend Software Engineer (Vue.js)",
+    "description": "Work on complex UI components and state management for enterprise apps.",
+    "location": "Austin, TX",
+    "employer": "CloudSpark Labs",
+    "requiredSkills": [
+      "Vue.js",
+      "Vuex",
+      "JavaScript",
+      "Tailwind CSS"
+    ]
+  },
+  {
+    "id": 14,
+    "title": "React Developer",
+    "description": "Develop high-performance client-side applications integrated with REST APIs.",
+    "location": "New York, NY",
+    "employer": "WebVision Technologies",
+    "requiredSkills": [
+      "React",
+      "Next.js",
+      "TypeScript",
+      "GraphQL"
+    ]
+  },
+  {
+    "id": 15,
+    "title": "Frontend Architect",
+    "description": "Define architecture and best practices for large-scale SPAs using modern JS frameworks.",
+    "location": "Remote",
+    "employer": "UIForge Inc.",
+    "requiredSkills": [
+      "React",
+      "Angular",
+      "Webpack"
+    ]
+  },
+  {
+    "id": 16,
+    "title": "DevOps Engineer",
+    "description": "Manage CI/CD pipelines and infrastructure automation using Terraform and Jenkins.",
+    "location": "Seattle, WA",
+    "employer": "CloudOps Solutions",
+    "requiredSkills": [
+      "Terraform",
+      "Jenkins",
+      "AWS",
+      "Docker"
+    ]
+  },
+  {
+    "id": 17,
+    "title": "Site Reliability Engineer (SRE)",
+    "description": "Ensure platform reliability and performance using Kubernetes and monitoring tools.",
+    "location": "Remote",
+    "employer": "ScaleSphere Technologies",
+    "requiredSkills": [
+      "Kubernetes",
+      "Prometheus",
+      "Grafana",
+      "AWS"
+    ]
+  },
+  {
+    "id": 18,
+    "title": "Infrastructure Automation Specialist",
+    "description": "Automate infrastructure deployments and manage IaC using Terraform and Ansible.",
+    "location": "Austin, TX",
+    "employer": "InfraEdge Consulting",
+    "requiredSkills": [
+      "Terraform",
+      "Ansible",
+      "AWS",
+      "Bash Scripting"
+    ]
+  },
+  {
+    "id": 19,
+    "title": "Cloud DevOps Architect",
+    "description": "Architect cloud-native DevOps solutions leveraging AWS and Kubernetes.",
+    "location": "San Francisco, CA",
+    "employer": "NextGen Cloud Services",
+    "requiredSkills": [
+      "AWS",
+      "Kubernetes",
+      "Terraform"
+    ]
+  },
+  {
+    "id": 20,
+    "title": "Build and Release Engineer",
+    "description": "Manage software releases, optimize build pipelines, and implement CI/CD best practices.",
+    "location": "Remote",
+    "employer": "PipelinePro Inc.",
+    "requiredSkills": [
+      "Jenkins",
+      "Docker",
+      "Helm"
+    ]
+  },
+  {
+    "id": 21,
+    "title": "Engineering Manager - Backend Systems",
+    "description": "Lead a team of backend engineers to build scalable microservices using Java and Go.",
+    "location": "New York, NY",
+    "employer": "TechSphere Inc.",
+    "requiredSkills": [
+      "Leadership",
+      "Java",
+      "Golang",
+      "Microservices",
+      "AWS"
+    ]
+  },
+  {
+    "id": 22,
+    "title": "Frontend Engineering Manager",
+    "description": "Oversee the development of user-facing applications, mentor UI engineers, and ensure UI/UX excellence.",
+    "location": "Remote",
+    "employer": "UIForge Labs",
+    "requiredSkills": [
+      "React",
+      "Angular",
+      "Leadership"
+    ]
+  }
+]

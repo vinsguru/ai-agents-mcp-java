@@ -1,0 +1,10 @@
+Candidate:
+{candidate}
+
+Jobs:
+{jobs}
+
+TASK
+1. Perform a comparative analysis for each job according to the defined criteria.
+2. Identify the single best career move as the final summary for the entire set.
+3. Ensure all insights are direct, using second person ("You").

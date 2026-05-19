@@ -1,0 +1,15 @@
+Job Title:
+{jobTitle}
+
+Job Description:
+{jobDescription}
+
+Required Skills:
+{requiredSkills}
+
+Candidate Resume:
+{candidateResume}
+
+TASK
+1. Evaluate the resume against the job requirements using the defined scoring guidelines.
+2. Provide the quantitative match score and the justification reasoning.

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnalyticsAgent - AI Data Workspace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown-light.min.css">
+
+    <style>
+        :root {
+            --primary-color: #6a6ee7;
+            --bg-sidebar: #ffffff;
+            --border-color: #e5e7eb;
+            --chart-bg: #2c343c; /* Professional Dark Background */
+        }
+
+        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Poppins', sans-serif; overflow: hidden; }
+        .dashboard { display: flex; width: 100vw; height: 100vh; }
+
+        .chat-section {
+            flex: 1;
+            display: flex; flex-direction: column;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .header {
+            padding: 16px 25px;
+            border-bottom: 1px solid var(--border-color);
+            background: #ffffff;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            color: #111827;
+        }
+
+        .header p {
+            margin: 0;
+            font-size: 11px;
+            color: #6b7280;
+            font-weight: 400;
+        }
+
+        .chart-section {
+            flex: 1;
+            background-color: #bec1c5;
+            display: flex; align-items: center; justify-content: center;
+            padding: 60px;
+        }
+
+        .chart-card {
+            width: 100%; height: 100%;
+            background: var(--chart-bg);
+            border-radius: 20px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #insightChart { width: 100%; height: 100%; }
+
+        .loader {
+            width: 48px; height: 48px;
+            border: 5px solid #c23531;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            animation: rotation 1s linear infinite;
+        }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .messages { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 20px; }
+        .message { max-width: 85%; padding: 16px 20px; border-radius: 18px; font-size: 14.5px; }
+        .user { align-self: flex-end; background: #6a6ee7; color: white; border-bottom-right-radius: 4px; }
+        .assistant { align-self: flex-start; background: white; border: 1px solid var(--border-color); border-bottom-left-radius: 4px; }
+
+        .input-container { padding: 20px; border-top: 1px solid var(--border-color); display: flex; gap: 12px; align-items: center; }
+        textarea {
+            flex: 1;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 12px 18px;
+            height: 48px;
+            outline: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13.5px;
+            color: #374151;
+            resize: none;
+            line-height: 1.5;
+            transition: border-color 0.2s ease;
+        }
+        textarea:focus { border-color: var(--primary-color); background-color: #fafafa; }
+
+        #sendBtn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            height: 48px;
+            padding: 0 25px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+        }
+
+        .typing-indicator { display: flex; gap: 5px; padding: 10px 15px; }
+        .dot {
+            width: 8px; height: 8px;
+            background: #6a6ee7; border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
+
+        #chartLoader {
+            width: 100%; height: 100%;
+            background: rgba(44, 52, 60, 0.8);
+            display: none; align-items: center; justify-content: center;
+            position: absolute; z-index: 20;
+        }
+
+        /* BRAND NEW PROMPT STYLES */
+        .btn-prompt {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            height: 48px;
+            padding: 0 15px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .prompt-modal {
+            display: none;
+            position: absolute;
+            bottom: 85px;
+            left: 20px;
+            right: 20px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            z-index: 100;
+            padding: 8px 0;
+        }
+        .prompt-list { max-height: 220px; overflow-y: auto; }
+        .prompt-item {
+            padding: 12px 20px;
+            font-size: 13px;
+            cursor: pointer;
+            color: #4b5563;
+            border-bottom: 1px solid #f9fafb;
+        }
+        .prompt-item:hover { background: #f8fafc; color: var(--primary-color); }
+    </style>
+</head>
+<body>
+
+<div class="dashboard">
+    <div class="chat-section">
+        <div class="header"><h1>AnalyticsAgent</h1><p>Intelligent Analytics Interface</p></div>
+        <div id="promptModal" class="prompt-modal"><div id="promptList" class="prompt-list"></div></div>
+        <div id="messages" class="messages"></div>
+        <div class="input-container">
+            <button id="promptBtn" class="btn-prompt" onclick="togglePrompts(event)">⚡</button>
+            <textarea id="userInput" placeholder="Ask for insights..."></textarea>
+            <button id="sendBtn" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+    <div class="chart-section">
+        <div id="chartContainer" class="chart-card" style="visibility: hidden;">
+            <div id="chartLoader"><span class="loader"></span></div>
+            <div id="insightChart"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const demoPrompts = [
+            "How many orders do we have?",
+            "Can you provide the order count based on gender?",
+            "Group the orders by category.",
+            "Which payment method is used the most?",
+            "Order count by region",
+            "How many COD orders were returned?",
+            "In which category did men place more orders?",
+            "How about women?",
+            "Who uses debit cards the most: men or women?",
+            "Which age group places the most orders?",
+            "Can you also provide the age ranges grouped by male and female customers?",
+            "Which category has the highest shipping cost?",
+            "Which region has the highest shipping cost?",
+            "Which region takes the longest time to deliver orders?",
+            "Which category has the best profit margin?",
+            "Why is the grocery category profit margin negative?",
+            "Does discount usage affect returns?",
+            "What is the percentage of returned items by region?",
+            "Show me the monthly revenue trend for 2024",
+            "Revenue trend by year",
+            "Returned vs non-returned orders per year"
+    ];
+
+    function togglePrompts(e) {
+        e.stopPropagation();
+        const modal = document.getElementById('promptModal');
+        if (modal.style.display !== 'block') {
+            document.getElementById('promptList').innerHTML = demoPrompts.map(p =>
+                `<div class="prompt-item" onclick="selectPrompt('${p}')">${p}</div>`
+            ).join('');
+            modal.style.display = 'block';
+        } else {
+            modal.style.display = 'none';
+        }
+    }
+
+    function selectPrompt(text) {
+        inputField.value = text;
+        document.getElementById('promptModal').style.display = 'none';
+        inputField.focus();
+    }
+
+    document.addEventListener('click', (e) => {
+        const modal = document.getElementById('promptModal');
+        if (modal.style.display === 'block' && !modal.contains(e.target) && e.target.id !== 'promptBtn') {
+            modal.style.display = 'none';
+        }
+    });
+
+    let currentChart = null;
+    const messagesDiv = document.getElementById('messages');
+    const inputField = document.getElementById('userInput');
+
+   async function sendMessage() {
+        const text = inputField.value.trim();
+        if (!text) return;
+        addMessage(text, 'user');
+        inputField.value = '';
+
+        const chartCont = document.getElementById('chartContainer');
+        const chartLoad = document.getElementById('chartLoader');
+        chartCont.style.visibility = 'visible';
+        chartLoad.style.display = 'flex';
+
+        const typingBubble = document.createElement('div');
+        typingBubble.className = 'message assistant typing-indicator';
+        typingBubble.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+        messagesDiv.appendChild(typingBubble);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+        try {
+            const response = await fetch('/api/analytics', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text })
+            });
+            const res = await response.json();
+            messagesDiv.removeChild(typingBubble);
+            addMessage(res.insight, 'assistant', true);
+            if (res.resultData) renderChart(res.chartTitle, res.chartType, res.resultData);
+        } catch (e) {
+            if (typingBubble.parentNode) messagesDiv.removeChild(typingBubble);
+            addMessage('Error: Connection failed.', 'assistant');
+        } finally {
+            chartLoad.style.display = 'none';
+        }
+    }
+
+    function renderChart(title, type, resultData) {
+        const chartDom = document.getElementById('insightChart');
+        if (currentChart) currentChart.dispose();
+        currentChart = echarts.init(chartDom);
+        const isPie = type === 'PIE' || type === 'DOUGHNUT';
+        const option = {
+            backgroundColor: '#2c343c',
+            title: { text: title, left: 'center', top: 20, textStyle: { color: '#ccc', fontWeight: 'lighter' } },
+            legend: { bottom: 10, textStyle: { color: '#ccc' }, icon: 'circle' },
+            tooltip: { trigger: isPie ? 'item' : 'axis', backgroundColor: 'rgba(50, 50, 50, 0.9)', textStyle: { color: '#fff' } },
+            color: ['#c23531', '#91c7ae', '#d48265', '#51A2FF', '#ca8622'],
+            series: resultData.values.map(v => ({
+                name: v.name,
+                type: isPie ? 'pie' : type.toLowerCase(),
+                radius: isPie ? (type === 'DOUGHNUT' ? ['40%', '70%'] : '55%') : null,
+                data: isPie ? resultData.keys.map((k, i) => ({ value: v.points[i], name: k })) : v.points,
+                label: { show: false },
+                itemStyle: { borderRadius: isPie ? 0 : [6, 6, 0, 0], borderColor: '#2c343c', borderWidth: 2 }
+            }))
+        };
+        if (!isPie) {
+            option.xAxis = { type: 'category', data: resultData.keys, axisLabel: { color: '#ccc' } };
+            option.yAxis = { type: 'value', splitLine: { lineStyle: { color: '#333' } }, axisLabel: { color: '#ccc' } };
+        }
+        currentChart.setOption(option);
+    }
+
+    function addMessage(text, role, isMd = false) {
+        const d = document.createElement('div');
+        d.classList.add('message', role);
+        d.innerHTML = isMd ? `<div class="markdown-body">${marked.parse(text)}</div>` : text;
+        messagesDiv.appendChild(d);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+</script>
+</body>
+</html>

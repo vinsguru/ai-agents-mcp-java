@@ -1,0 +1,10 @@
+Candidate:
+{candidate}
+
+Target Job:
+{job}
+
+TASK
+1. Synthesize a professional resume by mapping the candidate's verified experience to the target job requirements.
+2. Optimize bullet points for impact, focusing on technical achievements relevant to this role.
+3. Ensure the output follows the specified structural sections exactly.

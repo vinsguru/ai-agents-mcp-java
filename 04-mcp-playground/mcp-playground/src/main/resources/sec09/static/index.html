@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP Studio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --accent: #6366f1;
+            --card-bg: #ffffff;
+            --text-muted: #64748b;
+        }
+
+        body {
+            background-color: var(--bg);
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .main-card {
+            background: var(--card-bg);
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        #breadcrumb {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            padding: 12px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .uri-link {
+            color: var(--accent);
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        .uri-link:hover {
+            opacity: 0.7;
+            text-decoration: underline;
+        }
+
+        .table {
+            border-collapse: separate;
+            border-spacing: 0 8px;
+            margin-top: -8px;
+        }
+
+        .table thead th {
+            border: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        .table tbody tr {
+            background: white;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            transition: transform 0.1s;
+        }
+
+        .table tbody tr:hover {
+            transform: scale(1.005);
+            background-color: #fdfdff;
+        }
+
+        .table td {
+            border-top: 1px solid #f1f5f9;
+            border-bottom: 1px solid #f1f5f9;
+            padding: 16px;
+            vertical-align: middle;
+        }
+
+        .table td:first-child { border-left: 1px solid #f1f5f9; border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+        .table td:last-child { border-right: 1px solid #f1f5f9; border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        pre#rawJson {
+            background: #0f172a;
+            color: #38bdf8;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            max-height: 400px;
+            overflow: auto;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            border: none;
+            padding: 10px 24px;
+            font-weight: 600;
+            border-radius: 8px;
+        }
+
+        .chat-box {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            height: 520px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+    </style>
+</head>
+
+<body class="container py-5">
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold m-0">MCP Resources</h2>
+    <button class="btn btn-primary" onclick="loadRoot()">List Resources</button>
+</div>
+
+<div class="main-card p-4 mb-4">
+    <div class="mb-4">
+        <label class="form-label fw-semibold text-muted small">Navigation Path</label>
+        <div id="breadcrumb">Root</div>
+    </div>
+
+    <div id="resourcesSection">
+        <h5 class="mb-3 fw-bold">Available Resources</h5>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>URI</th>
+                    <th>MIME Type</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody id="resourceTable">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="jsonSection" style="display:none">
+        <div class="row">
+            <div class="col-md-6">
+                <h5 class="mb-3 fw-bold">Resource Details</h5>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th style="width: 30%">Field</th>
+                            <th>Value</th>
+                        </tr>
+                        </thead>
+                        <tbody id="jsonDetails"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <h5 class="mb-3 fw-bold">Career Advisor</h5>
+                <div class="chat-box p-3">
+                    <div id="chatMessages" class="chat-messages mb-3">
+                        <small class="text-muted">Ask Career Advisor for insights</small>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="chatInput" placeholder="Ask Career Advisor for insights...">
+                        <button class="btn btn-outline-primary" type="button" onclick="sendToLlm()">Ask</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-5">
+    <h6 class="text-muted fw-bold mb-3">RAW SYSTEM RESPONSE</h6>
+    <pre id="rawJson">// Click "List Resources" to begin...</pre>
+</div>
+
+<script>
+    let navStack = [];
+    let currentResourceUri = null;
+
+    const params = new URLSearchParams(window.location.search);
+    let userId = 0;
+    if(params.get('userId')){
+      userId = params.get('userId');
+    }
+
+    function updateBreadcrumb(){
+        const bc = document.getElementById("breadcrumb");
+        bc.innerHTML = "";
+
+        if(navStack.length === 0) {
+            bc.innerHTML = '<span class="text-muted">Root</span>';
+            return;
+        }
+
+        navStack.forEach((uri,index)=>{
+            const link = document.createElement("span");
+            link.className = "uri-link mono";
+            link.textContent = uri;
+            link.onclick = ()=>navigateTo(index);
+            bc.appendChild(link);
+            if(index < navStack.length-1) bc.append(" / ");
+        });
+    }
+
+    function showResources(){
+        document.getElementById("resourcesSection").style.display="block";
+        document.getElementById("jsonSection").style.display="none";
+    }
+
+    function showJson(){
+        document.getElementById("resourcesSection").style.display="none";
+        document.getElementById("jsonSection").style.display="block";
+    }
+
+    function renderJsonDetails(jsonText){
+        const table = document.getElementById("jsonDetails");
+        table.innerHTML="";
+        try{
+            const obj = JSON.parse(jsonText);
+            Object.entries(obj).forEach(([key,value])=>{
+                const row=document.createElement("tr");
+                row.innerHTML=`
+                    <td class="fw-bold text-secondary">${key}</td>
+                    <td class="mono">${typeof value === 'object' ? JSON.stringify(value) : value}</td>
+                `;
+                table.appendChild(row);
+            });
+        }catch(e){
+            table.innerHTML = "<tr><td colspan='2' class='text-danger'>Invalid JSON content</td></tr>";
+        }
+    }
+
+    async function loadRoot(){
+        navStack=[];
+        currentResourceUri = null;
+        updateBreadcrumb();
+        showResources();
+
+        const res = await fetch("/api/mcp/resources");
+        const resources = await res.json();
+
+        const table=document.getElementById("resourceTable");
+        table.innerHTML="";
+
+        resources.forEach(r=>{
+            const row=document.createElement("tr");
+            row.style.cursor = "pointer";
+            row.innerHTML=`
+                <td class="uri-link mono">${r.uri}</td>
+                <td><span class="badge bg-light text-dark border">${r.mimeType}</span></td>
+                <td class="text-muted small">${r.description || 'No description'}</td>
+            `;
+            row.onclick=()=>loadResource(r.uri);
+            table.appendChild(row);
+        });
+
+        document.getElementById("rawJson").textContent = JSON.stringify(resources,null,2);
+    }
+
+    async function loadResource(uri){
+        navStack.push(uri);
+        currentResourceUri = uri;
+        updateBreadcrumb();
+        const res = await fetch("/api/mcp/resources",{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({uri})
+        });
+        const contents = await res.json();
+        renderContents(contents);
+    }
+
+    async function navigateTo(index){
+        navStack = navStack.slice(0,index+1);
+        currentResourceUri = navStack[index];
+        updateBreadcrumb();
+        const uri = navStack[index];
+        const res = await fetch("/api/mcp/resources",{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({uri})
+        });
+        const contents = await res.json();
+        renderContents(contents);
+    }
+
+    function renderContents(contents){
+        let hasJson=false;
+        contents.forEach(c=>{ if(c.mimeType==="application/json") hasJson=true; });
+
+        if(hasJson){
+            showJson();
+            const json = contents.find(c=>c.mimeType==="application/json");
+            if(json && json.text) renderJsonDetails(json.text);
+        } else {
+            showResources();
+            const table=document.getElementById("resourceTable");
+            table.innerHTML="";
+            contents.forEach(c=>{
+                const row=document.createElement("tr");
+                row.style.cursor = c.uri ? "pointer" : "default";
+                row.innerHTML=`
+                    <td class="uri-link mono">${c.uri || "N/A"}</td>
+                    <td><span class="badge bg-light text-dark border">${c.mimeType || "N/A"}</span></td>
+                    <td class="text-muted small">${c.text || ""}</td>
+                `;
+                if(c.uri) row.onclick=()=>loadResource(c.uri);
+                table.appendChild(row);
+            });
+        }
+        document.getElementById("rawJson").textContent = JSON.stringify(contents,null,2);
+    }
+
+    async function sendToLlm() {
+        const input = document.getElementById("chatInput");
+        const msgContainer = document.getElementById("chatMessages");
+        const messageText = input.value.trim();
+
+        if(!messageText || !currentResourceUri) return;
+
+        // Display user message
+        const userDiv = document.createElement("div");
+        userDiv.className = "mb-2 p-2 bg-white rounded border";
+        userDiv.innerHTML = `<strong>You:</strong> ${messageText}`;
+        msgContainer.appendChild(userDiv);
+
+        input.value = "";
+        msgContainer.scrollTop = msgContainer.scrollHeight;
+
+        // Add loading spinner
+        const loadingDiv = document.createElement("div");
+        loadingDiv.className = "mb-2 p-2 rounded border text-muted";
+        loadingDiv.id = "loadingMsg";
+        loadingDiv.innerHTML = `<strong>Career Advisor:</strong> <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Thinking...`;
+        msgContainer.appendChild(loadingDiv);
+        msgContainer.scrollTop = msgContainer.scrollHeight;
+
+        try {
+            const response = await fetch("/api/mcp/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", userId},
+                body: JSON.stringify({
+                    message: messageText,
+                    resourceUri: currentResourceUri
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to reach endpoint");
+            }
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let assistantMsgDiv = null;
+            let markdownBuffer = '';
+            let isFirstChunk = true;
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                if (isFirstChunk) {
+                    loadingDiv.remove();
+
+                    assistantMsgDiv = document.createElement("div");
+                    assistantMsgDiv.className = "mb-2 p-2 rounded border";
+                    assistantMsgDiv.style.backgroundColor = "#e0f2fe";
+                    assistantMsgDiv.style.color = "#0369a1";
+                    assistantMsgDiv.innerHTML = `<strong>Career Advisor:</strong><div class="markdown-body mt-1"></div>`;
+                    msgContainer.appendChild(assistantMsgDiv);
+                    isFirstChunk = false;
+                }
+
+                markdownBuffer += decoder.decode(value, { stream: true });
+                assistantMsgDiv.querySelector('.markdown-body').innerHTML = marked.parse(markdownBuffer);
+                msgContainer.scrollTop = msgContainer.scrollHeight;
+            }
+        } catch(e) {
+            loadingDiv.innerHTML = `<strong class="text-danger">Error:</strong> Failed connection to assistant endpoint`;
+            msgContainer.scrollTop = msgContainer.scrollHeight;
+        }
+    }
+</script>
+</body>
+</html>

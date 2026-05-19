@@ -1,0 +1,10 @@
+Candidate:
+{candidate}
+
+Jobs:
+{jobs}
+
+TASK
+1. Evaluate the candidate's suitability for each job in the provided list based on the defined criteria.
+2. Calculate the quantitative match and provide a brief justification for each result.
+3. Ensure all insights are direct, using second person ("You").

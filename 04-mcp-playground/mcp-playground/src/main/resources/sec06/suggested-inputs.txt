@@ -1,0 +1,4 @@
+Book a flight to Seattle tomorrow.
+Check the weather in Las Vegas. If it is not rainy, book a flight the day after tomorrow.
+Check the weather for available airports in Texas tomorrow. Prefer a location with clear weather. If none are clear, choose the least severe option and book a flight.
+I need to go to Chicago in the next 2 to 5 days. Prefer a day with clear weather. If none are clear, choose the best available option and book the flight.

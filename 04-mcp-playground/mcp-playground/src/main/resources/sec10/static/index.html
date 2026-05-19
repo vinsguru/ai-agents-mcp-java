@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown-light.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+    <style>
+        :root { --primary: #6a6ee7; --border: #e5e7eb; --bg-nav: #ffffff; --bg-workspace: #fafafa; }
+
+        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Poppins', sans-serif; overflow: hidden; background: #fff; }
+
+        .app-container { display: flex; flex-direction: column; height: 100vh; }
+
+        /* Top Navigation */
+        .top-nav {
+            height: 65px;
+            display: flex;
+            align-items: center;
+            padding: 0 25px;
+            background: var(--bg-nav);
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            z-index: 10;
+        }
+        .nav-brand { font-weight: 600; font-size: 18px; margin-right: 40px; color: #1f2937; }
+        .nav-prompts { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 5px; }
+
+        /* Compact Prompt Items */
+        .prompt-item {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 13px;
+            transition: all 0.2s;
+            background: #fff;
+        }
+        .prompt-item:hover { border-color: var(--primary); color: var(--primary); }
+        .prompt-item.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 2px 4px rgba(106, 110, 231, 0.2); }
+
+        /* Workspace Layout */
+        .workspace { flex: 1; display: flex; overflow: hidden; width: 100%; }
+
+        /* Left Input Section */
+        .form-section {
+            width: 320px;
+            flex-shrink: 0;
+            padding: 25px;
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            background: #fff;
+        }
+        .form-section h3 { margin-top: 0; font-size: 18px; font-weight: 600; }
+
+        /* Right Output Section */
+        .output-section {
+            flex: 1;
+            min-width: 0; /* Prevents overflow from pushing container width */
+            padding: 30px;
+            overflow-y: auto;
+            background: var(--bg-workspace);
+        }
+
+        /* Form Elements */
+        .arg-group { margin-bottom: 20px; position: relative; }
+        label { display: block; font-size: 12px; font-weight: 500; margin-bottom: 6px; color: #4b5563; text-transform: uppercase; letter-spacing: 0.5px; }
+        input { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; outline: none; font-family: inherit; box-sizing: border-box; }
+        input:focus { border-color: var(--primary); ring: 2px var(--primary); }
+
+        .suggestions {
+            position: absolute; width: 100%; background: white; border: 1px solid var(--border);
+            border-radius: 6px; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-height: 200px; overflow-y: auto; display: none;
+        }
+        .suggestion-item { padding: 10px 12px; font-size: 13px; cursor: pointer; border-bottom: 1px solid #f3f4f6; }
+        .suggestion-item:last-child { border-bottom: none; }
+        .suggestion-item:hover { background: #f3f4f6; color: var(--primary); }
+
+        /* Output Formatting */
+        .markdown-body { background: transparent !important; font-size: 14px; line-height: 1.6; color: #1f2937; }
+        pre {
+            max-width: 100%;
+            overflow-x: auto !important;
+            border-radius: 8px;
+            background-color: #0d1117 !important;
+            padding: 16px;
+            border: 1px solid #30363d;
+        }
+
+        /* UI Elements */
+        .btn-invoke { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-invoke:hover { background: #585cd1; }
+        .btn-invoke:disabled { background: #d1d5db; cursor: not-allowed; }
+
+        .loader {
+            width: 28px; height: 28px; border: 3px solid #e5e7eb; border-bottom-color: var(--primary);
+            border-radius: 50%; display: none; animation: rotation 1s linear infinite; margin: 0 auto 20px;
+        }
+        @keyframes rotation { 0% { transform: rotate(0deg) } 100% { transform: rotate(360deg) } }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="top-nav">
+        <div class="nav-brand">MCP Prompts</div>
+        <div id="promptList" class="nav-prompts"></div>
+    </div>
+
+    <div class="workspace">
+        <div class="form-section">
+            <h3 id="selectedPromptTitle">Select a Prompt</h3>
+            <p id="selectedPromptDesc" style="font-size: 13px; color: #6b7280; margin-bottom: 25px;"></p>
+            <div id="argumentsContainer"></div>
+            <button id="invokeBtn" class="btn-invoke" style="display: none;" onclick="invokePrompt()">Invoke Prompt</button>
+        </div>
+
+        <div class="output-section">
+            <div id="loader" class="loader"></div>
+            <div id="streamingOutput" class="markdown-body"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    marked.setOptions({
+        highlight: function(code, lang) {
+            const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+            return hljs.highlight(code, { language }).value;
+        },
+        langPrefix: 'hljs language-'
+    });
+
+    let currentPrompts = [];
+    let selectedPrompt = null;
+
+    window.onload = loadPrompts;
+
+    async function loadPrompts() {
+        try {
+            const res = await fetch('/api/mcp/prompts');
+            currentPrompts = await res.json();
+            const list = document.getElementById('promptList');
+            list.innerHTML = currentPrompts.map((p, i) => `
+                <div class="prompt-item" id="nav-item-${i}" onclick="selectPrompt(${i}, this)">
+                    ${p.name}
+                </div>
+            `).join('');
+        } catch (e) { console.error("Failed to load prompts", e); }
+    }
+
+    function selectPrompt(index, element) {
+        document.querySelectorAll('.prompt-item').forEach(el => el.classList.remove('active'));
+        element.classList.add('active');
+
+        selectedPrompt = currentPrompts[index];
+        document.getElementById('selectedPromptTitle').innerText = selectedPrompt.name;
+        document.getElementById('selectedPromptDesc').innerText = selectedPrompt.description || '';
+        document.getElementById('invokeBtn').style.display = 'block';
+        document.getElementById('streamingOutput').innerHTML = '';
+
+        const container = document.getElementById('argumentsContainer');
+        container.innerHTML = selectedPrompt.arguments.map(arg => `
+            <div class="arg-group">
+                <label>${arg.name} ${arg.required ? '*' : ''}</label>
+                <input type="text" id="arg-${arg.name}" placeholder="${arg.description || ''}"
+                       autocomplete="off"
+                       onfocus="fetchSuggestions('${arg.name}')"
+                       oninput="fetchSuggestions('${arg.name}')">
+                <div id="sugg-${arg.name}" class="suggestions"></div>
+            </div>
+        `).join('');
+    }
+
+    async function fetchSuggestions(argName) {
+        const input = document.getElementById(`arg-${argName}`);
+        const suggBox = document.getElementById(`sugg-${argName}`);
+        if (!input.value && input !== document.activeElement) {
+            suggBox.style.display = 'none';
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/mcp/prompts/complete', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    argument: { name: argName, value: input.value },
+                    ref: { type: "ref/prompt", name: selectedPrompt.name },
+                    context: { arguments: {} }
+                })
+            });
+            const data = await res.json();
+            if (data.values?.length > 0) {
+                suggBox.innerHTML = data.values.map(s => `
+                    <div class="suggestion-item" onclick="apply('${argName}', '${s}')">${s}</div>
+                `).join('');
+                suggBox.style.display = 'block';
+            } else { suggBox.style.display = 'none'; }
+        } catch (e) { suggBox.style.display = 'none'; }
+    }
+
+    function apply(argName, val) {
+        document.getElementById(`arg-${argName}`).value = val;
+        document.getElementById(`sugg-${argName}`).style.display = 'none';
+    }
+
+    async function invokePrompt() {
+        const outputDiv = document.getElementById('streamingOutput');
+        const loader = document.getElementById('loader');
+        const btn = document.getElementById('invokeBtn');
+
+        outputDiv.innerHTML = '';
+        loader.style.display = 'block';
+        btn.disabled = true;
+
+        const args = {};
+        selectedPrompt.arguments.forEach(arg => {
+            args[arg.name] = document.getElementById(`arg-${arg.name}`).value;
+        });
+
+        try {
+            const response = await fetch('/api/mcp/prompts/invoke', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ name: selectedPrompt.name, arguments: args })
+            });
+
+            const text = await response.text();
+            loader.style.display = 'none';
+            outputDiv.innerHTML = marked.parse(text);
+            outputDiv.querySelectorAll('pre code').forEach((block) => { hljs.highlightElement(block); });
+        } catch (e) {
+            loader.style.display = 'none';
+            outputDiv.innerHTML = "<p style='color:red;'>Error invoking prompt.</p>";
+        } finally { btn.disabled = false; }
+    }
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.matches('input')) {
+            document.querySelectorAll('.suggestions').forEach(s => s.style.display = 'none');
+        }
+    });
+</script>
+</body>
+</html>
