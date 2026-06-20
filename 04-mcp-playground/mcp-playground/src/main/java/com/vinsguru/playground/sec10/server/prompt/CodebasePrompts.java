@@ -27,24 +27,22 @@ public class CodebasePrompts {
 
     @McpPrompt(name = "code-review", description = "Review Java code for bugs, security, and performance")
     public McpSchema.GetPromptResult codeReview(@McpArg(name = "filename", description = "Java File Name", required = true) String filename) {
-        return new McpSchema.GetPromptResult(
-                "Code Review",
+        return McpSchema.GetPromptResult.builder(
                 List.of(
-                        new McpSchema.PromptMessage(McpSchema.Role.USER, new McpSchema.TextContent(codeReviewMessage)),
-                        new McpSchema.PromptMessage(McpSchema.Role.USER, new McpSchema.TextContent(CODE_MESSAGE.formatted(sourceFiles.get(filename))))
+                        buildPromptMessage(McpSchema.Role.USER, codeReviewMessage),
+                        buildPromptMessage(McpSchema.Role.USER, CODE_MESSAGE.formatted(sourceFiles.get(filename)))
                 )
-        );
+        ).build();
     }
 
     @McpPrompt(name = "generate-tests", description = "Generate unit tests for Java code")
     public McpSchema.GetPromptResult generateTests(@McpArg(name = "filename", description = "Java File Name", required = true) String filename) {
-        return new McpSchema.GetPromptResult(
-                "Generate Tests",
+        return McpSchema.GetPromptResult.builder(
                 List.of(
-                        new McpSchema.PromptMessage(McpSchema.Role.USER, new McpSchema.TextContent(generateTestsMessage)),
-                        new McpSchema.PromptMessage(McpSchema.Role.USER, new McpSchema.TextContent(CODE_MESSAGE.formatted(sourceFiles.get(filename))))
+                        buildPromptMessage(McpSchema.Role.USER, generateTestsMessage),
+                        buildPromptMessage(McpSchema.Role.USER, CODE_MESSAGE.formatted(sourceFiles.get(filename)))
                 )
-        );
+        ).build();
     }
 
     /*
@@ -68,6 +66,13 @@ public class CodebasePrompts {
                                .stream()
                                .filter(name -> name.startsWith(prefix))
                                .toList();
+    }
+
+    private McpSchema.PromptMessage buildPromptMessage(McpSchema.Role role, String content){
+        return McpSchema.PromptMessage.builder(
+                role,
+                McpSchema.TextContent.builder(content).build()
+        ).build();
     }
 
 }

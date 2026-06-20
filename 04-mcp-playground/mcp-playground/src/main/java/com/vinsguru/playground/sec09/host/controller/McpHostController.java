@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /*
+    Not yet available
     @McpClient("job-service")
     private McpSyncClient client;
 * */
@@ -59,7 +60,7 @@ public class McpHostController {
     }
 
     private String readResourceContent(String resourceUri) {
-        return this.mcpClient.readResource(new McpSchema.ReadResourceRequest(resourceUri))
+        return this.mcpClient.readResource(McpSchema.ReadResourceRequest.builder(resourceUri).build())
                              .contents()
                              .stream()
                              .filter(McpSchema.TextResourceContents.class::isInstance)

@@ -27,7 +27,7 @@ public class ElicitRequestHandler {
     }
 
     @McpElicitation(clients = "file-service")
-    public McpSchema.ElicitResult handleElicitRequest(McpSchema.ElicitRequest request) {
+    public McpSchema.ElicitResult handleElicitRequest(McpSchema.ElicitFormRequest request) {
         log.info("elicit request: {}", request);
 
         // notify user
@@ -48,8 +48,7 @@ public class ElicitRequestHandler {
 
     private McpSchema.ElicitResult toElicitResult(boolean confirmed, Map<String, Object> inputData) {
         var action = confirmed ? McpSchema.ElicitResult.Action.ACCEPT : McpSchema.ElicitResult.Action.DECLINE;
-        return McpSchema.ElicitResult.builder()
-                                     .message(action)
+        return McpSchema.ElicitResult.builder(action)
                                      .content(inputData)
                                      .build();
     }

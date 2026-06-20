@@ -23,14 +23,14 @@ public class ApplicationConfiguration {
         var chatMemory = MessageWindowChatMemory.builder().maxMessages(20).build();
         var chatMemoryAdvisor = MessageChatMemoryAdvisor.builder(chatMemory).build();
         return builder.defaultSystem(systemMessage)
-                      .defaultToolCallbacks(toolCallbackProvider)
+                      .defaultTools(toolCallbackProvider) // spring AI 2.0 related changes
                       .defaultAdvisors(chatMemoryAdvisor)
                       .build();
     }
 
     @Bean
     public McpSessionManifest mcpSessionManifest(ChatModel chatModel, ToolCallbackProvider toolCallbackProvider, @Value("classpath:${section}/suggested-inputs.txt") Resource suggestedUserInputs) throws IOException {
-        var modelName = chatModel.getDefaultOptions().getModel();
+        var modelName = chatModel.getOptions().getModel();
         var tools = Arrays.stream(toolCallbackProvider.getToolCallbacks())
                           .map(toolCallback -> toolCallback.getToolDefinition().name())
                           .toList();

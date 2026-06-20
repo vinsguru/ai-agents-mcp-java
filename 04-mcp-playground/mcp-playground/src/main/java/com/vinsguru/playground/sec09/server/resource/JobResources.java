@@ -25,7 +25,7 @@ public class JobResources {
                                   .stream()
                                   .map(job -> McpResourceUtil.toTextResource(JobUriFormats.BY_ID.formatted(job.id()), job.title()))
                                   .toList();
-        return new McpSchema.ReadResourceResult(list);
+        return McpSchema.ReadResourceResult.builder(list).build();
     }
 
     @McpResource(uri = "jobs://positions/skill", description = "Jobs By Skill")
@@ -34,7 +34,7 @@ public class JobResources {
                                   .stream()
                                   .map(skill -> McpResourceUtil.toTextResource(JobUriFormats.BY_SKILL.formatted(skill), skill))
                                   .toList();
-        return new McpSchema.ReadResourceResult(list);
+        return McpSchema.ReadResourceResult.builder(list).build();
     }
 
     @McpResource(uri = "jobs://positions/location", description = "Jobs By Location")
@@ -43,7 +43,7 @@ public class JobResources {
                                   .stream()
                                   .map(location -> McpResourceUtil.toTextResource(JobUriFormats.BY_LOCATION.formatted(location), location))
                                   .toList();
-        return new McpSchema.ReadResourceResult(list);
+        return McpSchema.ReadResourceResult.builder(list).build();
     }
 
     @McpResource(uri = "jobs://positions/{id}")
@@ -52,7 +52,7 @@ public class JobResources {
                 JobUriFormats.BY_ID.formatted(id),
                 this.jobService.findById(Integer.parseInt(id))
         );
-        return new McpSchema.ReadResourceResult(List.of(content));
+        return McpSchema.ReadResourceResult.builder(List.of(content)).build();
     }
 
     @McpResource(uri = "jobs://positions/skill/{skill}")
@@ -61,7 +61,7 @@ public class JobResources {
                               .stream()
                               .map(job -> McpResourceUtil.toTextResource(JobUriFormats.BY_ID.formatted(job.id()), job.title()))
                               .toList();
-        return new McpSchema.ReadResourceResult(list);
+        return McpSchema.ReadResourceResult.builder(list).build();
     }
 
     @McpResource(uri = "jobs://positions/location/{location}")
@@ -70,7 +70,7 @@ public class JobResources {
                               .stream()
                               .map(job -> McpResourceUtil.toTextResource(JobUriFormats.BY_ID.formatted(job.id()), job.title()))
                               .toList();
-        return new McpSchema.ReadResourceResult(list);
+        return McpSchema.ReadResourceResult.builder(list).build();
     }
 
     private static class JobUriFormats {

@@ -1,7 +1,7 @@
 package com.vinsguru.playground.sec09.server.util;
 
 import io.modelcontextprotocol.spec.McpSchema;
-import org.springframework.ai.util.json.JsonParser;
+import org.springframework.ai.util.JacksonUtils;
 
 public class McpResourceUtil {
 
@@ -9,19 +9,15 @@ public class McpResourceUtil {
     private static final String MIME_TEXT = "text/plain";
 
     public static McpSchema.ResourceContents toJsonResource(String uri, Object object) {
-        return new McpSchema.TextResourceContents(
-                uri,
-                MIME_JSON,
-                JsonParser.toJson(object)
-        );
+        return McpSchema.TextResourceContents.builder(uri, JacksonUtils.getDefaultJsonMapper().writeValueAsString(object))
+                                             .mimeType(MIME_JSON)
+                                             .build();
     }
 
     public static McpSchema.ResourceContents toTextResource(String uri, String text) {
-        return new McpSchema.TextResourceContents(
-                uri,
-                MIME_TEXT,
-                text
-        );
+        return McpSchema.TextResourceContents.builder(uri, text)
+                                             .mimeType(MIME_TEXT)
+                                             .build();
     }
 
 }

@@ -23,13 +23,13 @@ public class ApplicationConfiguration {
     @Bean
     public ChatClient chatClient(ChatClient.Builder builder, ToolCallbackProvider toolCallbackProvider, @Value("classpath:${section}/system-message.txt") Resource systemMessage) {
         return builder.defaultSystem(systemMessage)
-                      .defaultToolCallbacks(toolCallbackProvider)
+                      .defaultTools(toolCallbackProvider) // spring AI 2.0 related changes
                       .build();
     }
 
     @Bean
     public McpSessionManifest mcpSessionManifest(ChatModel chatModel, ToolCallbackProvider toolCallbackProvider, @Value("classpath:${section}/suggested-inputs.txt") Resource suggestedUserInputs) throws IOException {
-        var modelName = chatModel.getDefaultOptions().getModel();
+        var modelName = chatModel.getOptions().getModel();
         var tools = Arrays.stream(toolCallbackProvider.getToolCallbacks())
                           .map(toolCallback -> toolCallback.getToolDefinition().name())
                           .toList();
